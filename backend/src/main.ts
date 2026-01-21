@@ -6,6 +6,9 @@ import { SeedService } from './seeds/seed.service'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { logger: ['log', 'error', 'warn', 'debug', 'verbose'] })
+  app.enableCors({
+    origin: '*',
+  })
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
     forbidNonWhitelisted: true, 

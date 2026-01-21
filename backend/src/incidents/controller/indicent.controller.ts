@@ -17,7 +17,7 @@ constructor(private readonly incidentService: IncidentService) {}
   @Roles('Conductor')
   @UseGuards( JwtGuard, RolesGuard ) 
   @ApiBearerAuth('access-token')  
-  async createTariff(@Body() dto: CreateIncidentDto, @Req() req: Request) {
+  async createIncident(@Body() dto: CreateIncidentDto, @Req() req: Request) {
     let user: User = req['user']
     this.logger.debug(`Registro de Incidencia iniciado: ${JSON.stringify({ name: dto.title, userId: user.id })}`)
     try {
@@ -36,7 +36,7 @@ constructor(private readonly incidentService: IncidentService) {}
   @ApiBearerAuth('access-token')  
   async doneIncident(@Param('id') id: string, @Req() req: Request) {
     let user: User = req['user']
-    this.logger.debug(`Concluir Incidencia iniciado: ${JSON.stringify({ incidentId: id, userId: user.id })}`)
+    this.logger.debug(`Concluir Incidencia iniciada: ${JSON.stringify({ incidentId: id, userId: user.id })}`)
     try {
       let r = await this.incidentService.doneIncident(id)    
       this.logger.log({ action: 'Concluir Incidencia', status: '201 Concluido', incidentId: id })

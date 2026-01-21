@@ -27,7 +27,7 @@ export class AuthService {
         let compared = await this.encryptor.comparePlaneHash(entry.password, account.password)
         if (!compared) throw new BadRequestException('Usuario o contraseña no válido')
         const token = this.jwtService.sign( { id: account.id } )
-        return { token: token }
+        return { token: token, ...account }
     }
 
     async signUpUser( entry: RegisterInput ) {
