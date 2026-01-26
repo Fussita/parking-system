@@ -20,6 +20,8 @@ import { IncidentGateway } from './incidents/incident.gateway';
 import { IncidentController } from './incidents/controller/indicent.controller';
 import { IncidentService } from './incidents/services/incident.services';
 import { SeedService } from './seeds/seed.service';
+import { DashboardService } from './dashboard/dashboard.service';
+import { DashboardController } from './dashboard/dashboard.controller';
 
 @Module({
   imports: [
@@ -56,7 +58,8 @@ import { SeedService } from './seeds/seed.service';
     VehicleController,
     TariffController,
     PaymentController,
-    IncidentController
+    IncidentController,
+    DashboardController
   ],
   providers: [
     PaymentMethodService,
@@ -68,7 +71,8 @@ import { SeedService } from './seeds/seed.service';
     ParkingService,
     IncidentService,
     SeedService,
-    IncidentGateway
+    IncidentGateway,
+    DashboardService
   ],
 })
 export class AppModule {}
