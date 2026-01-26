@@ -43,28 +43,12 @@ export class VehicleController {
       throw e
     }
   }
-
-  /*@Post('entry')
-  @Roles('Administrador', 'Conductor')
-  @UseGuards( JwtGuard, RolesGuard ) 
-  @ApiBearerAuth('access-token')
-  async registerEntry(@Body() dto: CreateVehicleEntryDto) {
-    this.logger.debug(`Registro de Entrada de Vehiculo iniciado: ${JSON.stringify({ rfidTag: dto.rfidTag, status: dto.status })}`)
-    try {
-      let r = await this.vehicleService.registerEntry(dto)
-      this.logger.log({ action: 'Registrar Entrada de Vehiculo', status: '201 Creado', rfidTag: dto.rfidTag, estadoDelVehiculo: dto.status })
-      return r
-    } catch (e) {
-      this.logger.error({ action: 'Registrar Entrada de Vehiculo', error: e.message, stack: e.stack, rfidTag: dto.rfidTag, estadoDelVehiculo: dto.status  });
-      throw e
-    }
-  }*/
   
   @Post('out/:rfidTag')
   @Roles('Administrador', 'Conductor')
   @UseGuards( JwtGuard, RolesGuard ) 
   @ApiBearerAuth('access-token')
-  async registerEntry(@Param('rfidTag') rfidTag: string, @Req() req: Request) {
+  async registerExit(@Param('rfidTag') rfidTag: string, @Req() req: Request) {
     let user = req['user']
     this.logger.debug(`Registro de Salida de Vehiculo iniciado: ${JSON.stringify({ rfidTag: rfidTag, userId: user.id })}`)
     try {
@@ -82,7 +66,7 @@ export class VehicleController {
   @UseGuards( JwtGuard, RolesGuard ) 
   @ApiBearerAuth('access-token')
   async getVehicleEntries() {
-    this.logger.debug(`Consulta de Entrada de Vehiculos iniciado`)
+    this.logger.debug(`Consulta de Movimientos de Vehiculos iniciado`)
     return this.vehicleService.getVehicleEntries()
   }
 
@@ -92,7 +76,7 @@ export class VehicleController {
   @ApiBearerAuth('access-token')
   async getVehicleByUser( @Req() req: Request ) {
     let user = req['user']
-    this.logger.debug(`Consulta de Entrada de Vehiculos por Usuario iniciado`)
+    this.logger.debug(`Consulta de Movimientos de Vehiculos por Usuario iniciado`)
     return this.vehicleService.getVehiclesByUser(user.id)
   }
 }

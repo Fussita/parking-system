@@ -7,6 +7,7 @@ import { User } from 'src/core/entity/user.entity'
 import { VehicleEntry } from 'src/core/entity/vehicle.entity'
 import { Parking } from 'src/core/entity/parking.entity'
 import { Tariff } from 'src/core/entity/tariff.entity'
+import { IncidentGateway } from 'src/incidents/incident.gateway'
 
 @Injectable()
 export class PaymentService {
@@ -21,6 +22,7 @@ export class PaymentService {
     private readonly entryRepo: Repository<VehicleEntry>,
     @InjectRepository(Parking)
     private readonly parkRepo: Repository<Parking>,
+    private readonly gateway: IncidentGateway
   ) {}
 
   async createPayment(dto: CreatePaymentDto, userId: string) {
@@ -51,6 +53,8 @@ export class PaymentService {
     await this.userRepo.save(user)
     await this.entryRepo.save(vhentry)
     await this.parkRepo.save(p)
+
+    await this.gateway.newVehicleEntry( vhentry )
     return p
   }
 

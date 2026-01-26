@@ -5,6 +5,7 @@ import { CreateVehicleDto, CreateVehicleEntryDto } from '../dto/vehicle-dto'
 import { User } from 'src/core/entity/user.entity'
 import { Vehicle, VehicleEntry } from 'src/core/entity/vehicle.entity'
 import { Parking } from 'src/core/entity/parking.entity'
+import { IncidentGateway } from 'src/incidents/incident.gateway'
 
 @Injectable()
 export class VehicleService {
@@ -17,6 +18,7 @@ export class VehicleService {
     private readonly entryRepo: Repository<VehicleEntry>,
     @InjectRepository(Parking)
     private readonly parkRepo: Repository<Parking>,
+    private readonly gateway: IncidentGateway
   ) {}
 
   async registerExit(rfidTag: string) {
@@ -36,6 +38,9 @@ export class VehicleService {
 
     await this.parkRepo.save(p)
     await this.entryRepo.save(entry)
+
+    await this.gateway.newVehicleEntry(entry)
+
   }
 
   async createVehicle(dto: CreateVehicleDto, userId: string): Promise<Vehicle> {

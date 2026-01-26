@@ -9,6 +9,7 @@ import {
 import { Server, Socket } from 'socket.io'
 import { Incident, IncidentMessage } from 'src/core/entity/incident.entity'
 import { User } from 'src/core/entity/user.entity'
+import { VehicleEntry } from 'src/core/entity/vehicle.entity'
 import { Repository } from 'typeorm'
 
 @WebSocketGateway({ cors: true })
@@ -57,6 +58,10 @@ export class IncidentGateway implements OnGatewayConnection, OnGatewayDisconnect
   async newIncident(incident: Incident) {
     const room = `incident-${incident.id}`
     this.server.to(room).emit('newIncident', { incident })
+  }
+
+  async newVehicleEntry(entry: VehicleEntry) {
+    this.server.emit('vehicleEntry', { entry })
   }
 
   @SubscribeMessage('sendMessage')
