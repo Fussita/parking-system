@@ -76,7 +76,8 @@ export class VehicleController {
   @ApiBearerAuth('access-token')
   async getVehicleByUser( @Req() req: Request ) {
     let user = req['user']
-    this.logger.debug(`Consulta de Movimientos de Vehiculos por Usuario iniciado`)
+    this.logger.debug(`Consulta de Vehiculos por Usuario iniciado`)
     return this.vehicleService.getVehiclesByUser(user.id)
   }
+  
 }

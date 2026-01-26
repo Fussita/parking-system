@@ -79,21 +79,22 @@ export class VehicleService {
   async registerEntry(dto: CreateVehicleEntryDto): Promise<VehicleEntry> {
     const vehicle = await this.vehicleRepo.findOne({ where: { rfidTag: dto.rfidTag } })
     if (!vehicle) throw new NotFoundException('Vehiculo no registrado')
-
     const entry = this.entryRepo.create({
       vehicle,
       status: dto.status,
       entryTime: new Date(),
       exitTime: dto.status === 'OUT' ? new Date() : null,
     })
-
     return this.entryRepo.save(entry)
   }
 
   async getVehicleEntries(): Promise<VehicleEntry[]> {
     return this.entryRepo.find({
       where: {},
-      order: { entryTime: 'DESC' },
+      order: { 
+        entryTime: 'DESC', 
+        exitTime: 'DESC'
+      },
       relations: ['vehicle']
     })
   }
