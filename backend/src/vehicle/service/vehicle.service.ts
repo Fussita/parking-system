@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { IsNull, Repository } from 'typeorm'
 import { CreateVehicleDto, CreateVehicleEntryDto } from '../dto/vehicle-dto'
 import { User } from 'src/core/entity/user.entity'
 import { Vehicle, VehicleEntry } from 'src/core/entity/vehicle.entity'
@@ -22,24 +22,32 @@ export class VehicleService {
   ) {}
 
   async registerExit(rfidTag: string) {
-    let veh = await this.vehicleRepo.findOne({ where: {rfidTag: rfidTag}, relations: ['parking'] })
+    let veh = await this.vehicleRepo.findOne({ where: { rfidTag: rfidTag } })
     if (!veh) throw new BadRequestException('Vehiculo no registrado')
-    let entry = await this.entryRepo.findOne({ where: { vehicle: veh, exitTime: null } })
 
-    let p = veh.parking
+    let entry = await this.entryRepo.findOne({ where: { vehicle: { id: veh.id }, exitTime: IsNull() } })
 
-    if (!p) throw new BadRequestException('Vehiculo no estacionado')
+    // Buscar el puesto por el lado dueño de la relación (Parking.vehicle).
+    let p = await this.parkRepo.findOne({ where: { vehicle: { id: veh.id } } })
 
-    p.occupied = false
-    p.vehicle = null
+    // Si no hay entry abierto ni parking asociado, realmente no está estacionado.
+    if (!entry && !p) throw new BadRequestException('Vehiculo no estacionado')
 
-    entry.status = 'OUT'
-    entry.exitTime = new Date()
+    // Hacemos la operación idempotente y capaz de reparar estados corruptos:
+    // - Si existe parking, lo liberamos aunque el entry no se encuentre.
+    // - Si existe entry abierto, lo cerramos aunque el parking no se encuentre.
+    if (p) {
+      p.occupied = false
+      p.vehicle = null
+      await this.parkRepo.save(p)
+    }
 
-    await this.parkRepo.save(p)
-    await this.entryRepo.save(entry)
-
-    await this.gateway.newVehicleEntry(entry)
+    if (entry) {
+      entry.status = 'OUT'
+      entry.exitTime = new Date()
+      await this.entryRepo.save(entry)
+      await this.gateway.newVehicleEntry(entry)
+    }
 
   }
 
