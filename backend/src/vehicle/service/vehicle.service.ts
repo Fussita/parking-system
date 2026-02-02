@@ -73,7 +73,7 @@ export class VehicleService {
         entryTime: 'DESC', 
         exitTime: 'DESC'
       },
-      relations: ['vehicle', 'vehicle.user']
+      relations: { vehicle: { user: true } }
     })
   }
 
