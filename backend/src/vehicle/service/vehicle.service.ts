@@ -39,6 +39,7 @@ export class VehicleService {
     // Hacemos la operación idempotente y capaz de reparar estados corruptos:
     // - Si existe parking, lo liberamos aunque el entry no se encuentre.
     // - Si existe entry abierto, lo cerramos aunque el parking no se encuentre.
+
     if (p) {
       p.occupied = false
       p.vehicle = null
@@ -54,7 +55,7 @@ export class VehicleService {
       await this.barrierRepo.save(b)
       await this.gateway.barrierMoved( b )
       await this.entryRepo.save(entry)
-      await this.gateway.newVehicleEntry(entry)
+      await this.gateway.newVehicleEntry({ ...entry, rfidTag: entry })
       
       setTimeout( async () => {
         b.name = 'CLOSED'
