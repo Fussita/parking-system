@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { IsNull, Repository } from 'typeorm'
 import { CreatePaymentDto } from '../dto/payment.dto'
 import { Payment } from 'src/core/entity/payment.entity'
 import { User } from 'src/core/entity/user.entity'
@@ -38,7 +38,7 @@ export class PaymentService {
     let vh = user.vehicles.filter( e => e.rfidTag == dto.rfidTag )[0]
     if (!vh) throw new BadRequestException('Vehiculo no Registrado')
 
-    let find = await this.entryRepo.findOne({ where: { vehicle: vh, exitTime: null } })
+    let find = await this.entryRepo.findOne({ where: { vehicle: { id: vh.id }, exitTime: IsNull() } })
     if (find) throw new BadRequestException('Vehiculo ya esta estacionado')
 
     let parks = await this.parkRepo.find({ where: { occupied: false } })
