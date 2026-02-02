@@ -1,0 +1,50 @@
+<div class="incidencias-container">
+  <div class="header-actions">
+    <h2>Gestión de Incidencias</h2>
+    <div class="filter-group">
+      <label for="statusFilter">Filtrar por estatus:</label>
+      <select id="statusFilter" (change)="filterByStatus($event)">
+        <option value="Todos">Todos</option>
+        <option value="OPEN">Pendiente </option>
+        <option value="CLOSED">Resuelto </option>
+      </select>
+    </div>
+  </div>
+  
+  <table class="incidencias-table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Título</th>
+        <th>Descripción</th>
+        <th>Fecha Creación</th>
+        <th>Estatus</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of filteredIncidencias">
+        <td [title]="item.id">#{{ item.id | slice:0:6 }}</td>
+        <td>{{ item.user.name }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.createdAt | date:'short' }}</td>
+        <td>{{ item.status }}</td>
+        <td class="actions">
+          <button (click)="openChat(item)" class="btn-chat">CHAT</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="chat-overlay" *ngIf="isChatOpen">
+    <div class="chat-modal">
+      <div class="chat-modal-header">
+        <span>Chat - {{currentChatIncidencia?.title}}</span>
+        <button class="close-btn" (click)="closeChat()">X</button>
+      </div>
+      <div class="chat-modal-body">
+        <app-chat (resolveIncident)="resolveCurrentChat()" ></app-chat>
+      </div>
+    </div>
+  </div>
+</div>

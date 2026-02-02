@@ -1,0 +1,69 @@
+
+<div class="cont-prin-usu">
+  <section class="section-1">
+    <div>
+      <h1>Gestión de Tarifas</h1>
+      <p>Configura los costos y tipos de cobro del estacionamiento.</p>
+    </div>
+
+    <div class="user-actions">
+      <button class="btn-add-user" (click)="openCreate()">Nueva Tarifa</button>
+    </div>
+  </section>
+
+  <div class="modal-overlay" *ngIf="showCreateForm" (click)="closeCreate()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2>{{ editingTarifa ? 'Editar Tarifa' : 'Nueva Tarifa' }}</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Nombre</label>
+          <input type="text" [(ngModel)]="formTarifa.name" placeholder="Nombre de la tarifa">
+        </div>
+
+        <div class="form-group">
+          <label>Descripción</label>
+          <input type="text" [(ngModel)]="formTarifa.description" placeholder="Ej. Hora General">
+        </div>
+
+        <div class="form-group">
+          <label>Tarifa ($)</label>
+          <input type="number" [(ngModel)]="formTarifa.ratePerHour" placeholder="0.00">
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" (click)="closeCreate()">Cancelar</button>
+          <button class="btn-save" (click)="saveTarifa()">{{ editingTarifa ? 'Actualizar' : 'Guardar' }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-search">
+    <input class="sub-top-inp inp-a" [formControl]="inpSearch" placeholder="Buscar Tarifa..." type="text" > 
+  </div>
+
+  <section class="section-2">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Tarifa</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of tarifas">
+          <td>{{ t.name }}</td>
+          <td>{{ t.description }}</td>
+          <td>$ {{ t.ratePerHour }}</td>
+          <td>
+            <button class="btn-edit" (click)="editTarifa(t)" *ngIf="t.id">Editar</button>
+            <button class="btn-delete" (click)="deleteTarifa(t.id!)" *ngIf="t.id">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>

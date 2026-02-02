@@ -1,0 +1,29 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <h3>Soporte en Línea</h3>
+    <button class="btn-finalize" (click)="resolveIncident.emit()">Finalizar Incidencia</button>
+  </div>
+
+  <div class="chat-messages" #scrollContainer>
+    <div class="message" *ngFor="let msg of messages" [ngClass]="{'my-message': msg.id}">
+      <div class="message-content">
+        <div class="user-name">{{ msg.sender.name }}</div>
+        <div class="text">{{ msg.message }}</div>
+        <div class="time">{{ msg.timestamp | date:'shortTime' }}</div>
+      </div>
+    </div>
+    <div *ngIf="messages.length === 0" class="no-messages">
+      <p>Inicia una conversación...</p>
+    </div>
+  </div>
+
+  <div class="chat-input hover-effect">
+    <input 
+      type="text" 
+      [(ngModel)]="newMessage" 
+      (keyup.enter)="sendMessage()" 
+      placeholder="Escribe un mensaje..."
+    >
+    <button (click)="sendMessage()">Enviar</button>
+  </div>
+</div>

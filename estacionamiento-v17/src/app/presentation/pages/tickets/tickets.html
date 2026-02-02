@@ -1,0 +1,45 @@
+<div class="tickets-container">
+  <div class="header-section">
+    <div>
+      <h1>Tickets Activos</h1>
+      <p>Control de vehículos estacionados actualmente.</p>
+    </div>
+    <button class="btn-history" (click)="goToHistory()">
+      Ver Historial Completo
+    </button>
+  </div>
+
+  <div class="actions-bar">
+    <div class="new-entry">
+      <input type="text" 
+             [formControl]="plateInput" 
+             placeholder="PLACA (ENTER)" 
+             class="plate-input"
+             (keyup.enter)="registerEntry()">
+      <button class="btn-primary" 
+              (click)="registerEntry()" 
+              [disabled]="isProcessing || !plateInput.value">
+        {{ isProcessing ? 'PROCESANDO...' : 'ENTRADA' }}
+      </button>
+    </div>
+  </div>
+
+  <div class="tickets-grid">
+    <div class="ticket-card active-card" *ngFor="let t of Demotickets">
+      <div class="ticket-header">
+        <span class="plate">{{ t.plate || 'Sin Placa' }}</span>
+        <!-- Aquí podrías usar un pipe para calcular tiempo real -->
+        <span class="time-badge">En curso</span>
+      </div>
+      <div class="ticket-info">
+        <p>Entrada: {{ t.date | date:'shortTime' }}</p>
+        <p>Ticket #{{ t.orderId }}</p>
+      </div>
+      <button class="btn-checkout" (click)="processExit(t)">PROCESAR SALIDA</button>
+    </div>
+     
+    <div class="empty-state" *ngIf="Demotickets.length === 0">
+      <p>No hay vehículos registrados actualmente.</p>
+    </div>
+  </div>
+</div>

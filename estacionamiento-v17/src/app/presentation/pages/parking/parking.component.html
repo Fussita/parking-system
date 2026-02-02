@@ -1,0 +1,47 @@
+<div class="parking-container">
+    <div class="header">
+        <h1>Mapa de Estacionamiento</h1>
+        <div class="actions">
+            <button class="btn-add" (click)="createSpot()">
+                <span class="icon">+</span> Agregar Puesto
+            </button>
+        </div>
+    </div>
+
+    <div class="legend">
+        <div class="item"><span class="dot free"></span> Libre</div>
+        <div class="item"><span class="dot occupied"></span> Ocupado</div>
+    </div>
+
+    <div class="grid-layout" *ngIf="!isLoading; else loadingTpl">
+        <div class="parking-spot" 
+             *ngFor="let spot of spots" 
+             [ngClass]="{
+                'free': !spot.occupied, 
+                'occupied': spot.occupied
+             }">
+            
+            <div class="spot-header">
+                <span class="code">{{ spot.name }}</span>
+                <button class="btn-delete" (click)="deleteSpot(spot)" title="Eliminar Puesto">×</button>
+            </div>
+            
+            <div class="spot-body">
+                <div class="car-icon" *ngIf="spot.occupied">🚗</div>
+                <div class="free-icon" *ngIf="!spot.occupied">P</div>
+                <small>{{ spot.location }}</small>
+                <div *ngIf="spot.vehicle" style="font-size: 0.8rem; font-weight: bold; margin-top: 4px;">{{ spot.vehicle.rfidTag }}</div>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #loadingTpl>
+        <div class="loading">Cargando mapa...</div>
+    </ng-template>
+
+    <div *ngIf="spots.length === 0 && !isLoading" class="empty-state">
+        <p>No hay puestos de estacionamiento creados.</p>
+        <button (click)="createSpot()">Crear primer puesto</button>
+    </div>
+</div>
+

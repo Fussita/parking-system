@@ -1,0 +1,41 @@
+<div class="container-prin">
+
+
+	<form class="card" [formGroup]="form" (ngSubmit)="onSubmit()">
+		
+		<h1 class="title">Administrador Login </h1>
+
+		<div flex style="justify-content: center;">
+			<img style="height: 80px;" src="assets/logo.jpeg" alt="Logo" />
+		</div>
+
+		<label class="label">
+			<span>Usuario</span>
+			<input formControlName="username" type="text" placeholder="Usuario" />
+			<small class="error-text" *ngIf="form.get('username')?.hasError('required') && form.get('username')?.touched">
+				El usuario es obligatorio.
+			</small>
+			<small class="error-text" *ngIf="form.get('username')?.hasError('pattern') && form.get('username')?.touched">
+				Solo letras, números y guiones bajos.
+			</small>
+			<small class="error-text" *ngIf="form.get('username')?.hasError('minlength') && form.get('username')?.touched">
+				Debe tener al menos 4 caracteres.
+			</small>
+		</label>
+
+		<label class="label">
+			<span>Contraseña</span>
+			<input formControlName="password" type="password" placeholder="Contraseña" />
+			<small class="error-text" *ngIf="form.get('password')?.hasError('required') && form.get('password')?.touched">
+				La contraseña es obligatoria.
+			</small>
+			<small class="error-text" *ngIf="form.get('password')?.hasError('minlength') && form.get('password')?.touched">
+				Debe tener al menos 6 caracteres.
+			</small>
+		</label>
+
+		<button class="btn" type="submit" [disabled]="submitting">{{ submitting ? 'Validando...' : 'Entrar' }}</button>
+
+		<p class="hint">Usa <strong>admin</strong>/<strong>admin</strong> para demo.</p>
+	</form>
+</div>

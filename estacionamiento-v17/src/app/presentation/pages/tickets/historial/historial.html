@@ -1,0 +1,47 @@
+<div class="history-container">
+  <div class="hist-header">
+    <h1>Historial de Tickets</h1>
+    <p>Consulta tickets cerrados por Placa o ID.</p>
+  </div>
+
+  <div class="hist-controls">
+    <input 
+      type="text" 
+      [formControl]="searchInput" 
+      placeholder="Buscar Placa o ID de Ticket..." 
+      class="search-bar">
+    <div style="flex-grow: 1;"></div> 
+    <button class="btn-back" (click)="goToActive()">Volver a Activos</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="history-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Placa</th>
+          <th>Entrada</th>
+          <th>Total</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let t of historyTickets">
+          <td>#{{ t.orderId }}</td>
+          <td>{{ t.plate || '---' }}</td>
+          <td>{{ t.date | date:'short' }}</td>
+          <td class="amount">$ {{ t.total | number:'1.2-2' }}</td>
+          <td>
+            <span class="badge" [class.paid]="t.paid">
+              {{ t.paid ? 'PAGADO' : 'PENDIENTE' }}
+            </span>
+          </td>
+        </tr>
+        
+        <tr *ngIf="filteredTickets.length === 0">
+          <td colspan="5" class="no-data">No se encontraron tickets en el historial.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,110 @@
+<div class="dashboard-container">
+  <!-- fila 1: 4 tarjetas -->
+  <section class="stats-row">
+    <div class="stat-card" *ngFor="let s of stats">
+      <div class="stat-title">{{ s.title }}</div>
+      <div class="stat-value">{{ s.value }}</div>
+    </div>
+  </section>
+
+  <!-- fila 2: grafico principal y actividad -->
+  <section class="charts-row">
+    <div class="main-chart card">
+      <div class="chart-header">
+        <h3>Ingresos mensuales</h3>
+        <div class="chart-legend">Seguimiento de recaudación</div>
+      </div>
+
+      <div class="bars">
+        <div class="bar" *ngFor="let h of monthlyNormalized; let i = index" [style.height.%]="h" [attr.title]="monthlySales[i] + ' USD'"></div>
+      </div>
+
+      <div class="chart-xlabels">
+        <span *ngFor="let m of monthlyNormalized; let i = index">Mes {{ i + 1 }}</span>
+      </div>
+    </div>
+
+    <aside class="activity card">
+      <h3>Actividad Reciente</h3>
+      <ul>
+        <li ft-12-500 *ngIf="recentActivity.length == 0">No hay movimientos recientes</li>
+
+        <li *ngFor="let a of recentActivity" [ngClass]="{'status-in': a.type === 'IN', 'status-out': a.type === 'OUT'}">
+          <div class="act-left">
+            <div class="act-title">{{ a.label }}</div>
+            <div class="act-meta">
+              <span class="act-user" style="font-weight: bold; color: #475569;">{{ a.user }}</span>
+              <span class="act-divider">|</span>
+              <span class="act-puesto">{{ a.amount }}</span>
+              <span class="act-divider">|</span>
+              <span class="act-time">{{ a.time }} - {{ a.date }}</span>
+            </div>
+          </div>
+          <div class="act-status">
+            <span class="dot"></span>
+          </div>
+        </li>
+      </ul>
+    </aside>
+  </section>
+
+  <!-- Control de Barreras -->
+  <section class="barrerasMain">
+    <h2 style="text-align: center;"> Gestión de las Barreras</h2>
+
+    <div class="barreras-cont"> 
+    
+      <div class="barrerasList">
+        <h3>Lista de Barreras</h3>
+        <div class="barrier-item" *ngFor="let barrier of barriers" 
+             (click)="selectBarrier(barrier)"
+             [class.selected]="selectedBarrierId === barrier.id">
+          
+          <div class="barrier-info">
+            <span class="barrier-name">{{ barrier.name }}</span>
+            <span class="barrier-status" [ngClass]="{'open': barrier.status === 'OPEN', 'closed': barrier.status === 'CLOSED'}">
+              {{ barrier.status === 'OPEN' ? 'ABIERTA' : 'CERRADA' }}
+            </span>
+          </div>
+
+          <!-- Panel de control manual desplegable -->
+          <div class="manual-controls" *ngIf="selectedBarrierId === barrier.id" (click)="$event.stopPropagation()">
+            <p>Control Manual</p>
+            <div class="control-buttons">
+              <button class="btn-open" (click)="toggleSelectedBarrier('OPEN')" [disabled]="barrier.status === 'OPEN'">ABRIR</button>
+              <button class="btn-close" (click)="toggleSelectedBarrier('CLOSED')" [disabled]="barrier.status === 'CLOSED'">CERRAR</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="barrerasActivity">
+        <h3>Control de Barreras</h3>
+        <div class="barrier-actions">
+          <button (click)="showCreateForm()">Crear barrera nueva</button>
+          <button (click)="showDeleteForm()">Eliminar barrera</button>
+        </div>
+
+        <div class="barrier-form" *ngIf="activeAction === 'create'">
+          <h3>Crear Nueva Barrera</h3>
+          <input type="text" [(ngModel)]="newBarrierName" placeholder="Nombre de la barrera">
+          <div class="form-buttons">
+            <button (click)="submitCreateBarrier()">Aceptar/Crear</button>
+            <button (click)="activeAction = null">Cancelar</button>
+          </div>
+        </div>
+
+        <div class="barrier-form" *ngIf="activeAction === 'delete'">
+          <h3>Eliminar Barrera</h3>
+          <input type="text" [(ngModel)]="deleteBarrierName" placeholder="Nombre de la barrera a eliminar">
+          <div class="form-buttons">
+            <button (click)="submitDeleteBarrier()">Aceptar/Eliminar</button>
+            <button (click)="activeAction = null">Cancelar</button>
+          </div>
+        </div>
+    
+      </div> 
+    </div> 
+  
+  </section>
+</div>

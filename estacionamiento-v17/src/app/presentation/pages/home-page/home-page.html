@@ -1,0 +1,14 @@
+<div class="cont-principal" [class.nav-open]="showNavbar">
+    <button class="toggle-btn" (click)="toggleNavbar()" aria-label="Abrir menú">☰</button>
+
+    <div class="navbar" [attr.aria-hidden]="!showNavbar">
+        <app-navbar></app-navbar>
+    </div>
+
+   
+    <div class="overlay" *ngIf="showNavbar" (click)="closeNavbar()" aria-hidden="true"></div>
+
+    <div class="content">
+        <router-outlet></router-outlet>       
+    </div>
+</div>

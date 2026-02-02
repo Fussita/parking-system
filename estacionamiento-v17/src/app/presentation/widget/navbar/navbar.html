@@ -1,0 +1,53 @@
+<div class="cont-prin-nav">
+    <div class="nav-title">
+
+        <h1>Panel de control</h1>
+
+    </div>
+
+    <nav class="nav-content" aria-label="Navegación principal">
+        <ul>
+            <li routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+                <a routerLink="/home/dashboard">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zM13 21h8V11h-8v10zM13 3v6h8V3h-8z"/></svg></span>
+                    <span class="label">Dashboard</span>
+                </a>
+            </li>
+
+           
+            <li routerLinkActive="active">
+                <a routerLink="/home/tarifas">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zM8 11c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V20h14v-3.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.96 1.97 3.45V20h6v-1.5C23 15.17 18.33 14 16 14z"/></svg></span>
+                    <span class="label">Tarifas</span>
+                </a>
+            </li>
+
+
+            <!-- <li routerLinkActive="active">
+                <a routerLink="/home/tickets">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-4 0-8 2-8 6v2h16v-2c0-4-4-6-8-6z"/></svg></span>
+                    <span class="label">Tickets</span>
+                </a>
+            </li> -->
+
+            <li routerLinkActive="active">
+                <a routerLink="/home/incidencias">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M3 3h18v4H3V3zm0 7h18v11H3V10z"/></svg></span>
+                    <span class="label">Incidencias</span>
+                </a>
+            </li>
+
+            <li routerLinkActive="active">
+                <a routerLink="/home/parking">
+                    <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14l.84-2h8.79l2.1 5H9.53L7.16 14zM20 6H6l-.94-2H1v2h3l3.6 7.59-1.35 2.44C6.16 18.37 6 18.66 6 19c0 1.1.9 2 2 2h12v-2H8.42c-.14 0-.25-.11-.25-.25l.03-.12L9.1 16h7.45c.75 0 1.41-.41 1.75-1.03L22 8v-.01L20 6z"/></svg></span>
+                    <span class="label">Gestion de puestos </span>
+                </a>
+            </li>
+              
+        </ul>
+    </nav>
+
+    <div class="nav-settings">
+        <button (click)="logout()" >Cerrar sesión</button>
+    </div>
+</div>
