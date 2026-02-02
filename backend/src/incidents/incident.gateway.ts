@@ -65,8 +65,8 @@ export class IncidentGateway implements OnGatewayConnection, OnGatewayDisconnect
     this.server.emit('barriedMoved', { entry })
   }
 
-  async newVehicleEntry(entry: VehicleEntry) {
-    this.server.emit('vehicleEntry', { entry })
+  async newVehicleEntry(entry: any) {
+    this.server.emit('vehicleEntry', { ...entry })
   }
 
   @SubscribeMessage('sendMessage')

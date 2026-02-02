@@ -61,7 +61,7 @@ export class PaymentService {
     b.status = 'OPEN'
     await this.barrierRepo.save(b)
     await this.gateway.barrierMoved( b )
-    await this.gateway.newVehicleEntry( vhentry )
+    await this.gateway.newVehicleEntry( {...vhentry, rfidTag: vh.rfidTag } )
 
     setTimeout( async () => {
       b.name = 'CLOSED'
