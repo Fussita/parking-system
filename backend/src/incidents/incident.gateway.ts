@@ -7,6 +7,7 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets'
 import { Server, Socket } from 'socket.io'
+import { Barrier } from 'src/core/entity/barrier.entity'
 import { Incident, IncidentMessage } from 'src/core/entity/incident.entity'
 import { User } from 'src/core/entity/user.entity'
 import { VehicleEntry } from 'src/core/entity/vehicle.entity'
@@ -58,6 +59,10 @@ export class IncidentGateway implements OnGatewayConnection, OnGatewayDisconnect
   async newIncident(incident: Incident) {
     const room = `incident-${incident.id}`
     this.server.to(room).emit('newIncident', { incident })
+  }
+
+  async barrierMoved(entry: Barrier) {
+    this.server.emit('barriedMoved', { entry })
   }
 
   async newVehicleEntry(entry: VehicleEntry) {

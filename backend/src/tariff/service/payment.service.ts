@@ -8,6 +8,7 @@ import { VehicleEntry } from 'src/core/entity/vehicle.entity'
 import { Parking } from 'src/core/entity/parking.entity'
 import { Tariff } from 'src/core/entity/tariff.entity'
 import { IncidentGateway } from 'src/incidents/incident.gateway'
+import { Barrier } from 'src/core/entity/barrier.entity'
 
 @Injectable()
 export class PaymentService {
@@ -22,6 +23,8 @@ export class PaymentService {
     private readonly entryRepo: Repository<VehicleEntry>,
     @InjectRepository(Parking)
     private readonly parkRepo: Repository<Parking>,
+    @InjectRepository(Barrier)
+    private readonly barrierRepo: Repository<Barrier>,
     private readonly gateway: IncidentGateway
   ) {}
 
@@ -53,8 +56,18 @@ export class PaymentService {
     await this.userRepo.save(user)
     await this.entryRepo.save(vhentry)
     await this.parkRepo.save(p)
-
+    
+    let b = await this.barrierRepo.findOne( { where: { name: 'Entrada-PB' } })
+    b.status = 'OPEN'
+    await this.barrierRepo.save(b)
+    await this.gateway.barrierMoved( b )
     await this.gateway.newVehicleEntry( vhentry )
+
+    setTimeout( async () => {
+      b.name = 'CLOSED'
+      await this.barrierRepo.save(b)
+      await this.gateway.barrierMoved( b )
+    }, 3000 )    
     return p
   }
 

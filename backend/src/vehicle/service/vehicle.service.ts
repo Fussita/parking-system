@@ -6,6 +6,7 @@ import { User } from 'src/core/entity/user.entity'
 import { Vehicle, VehicleEntry } from 'src/core/entity/vehicle.entity'
 import { Parking } from 'src/core/entity/parking.entity'
 import { IncidentGateway } from 'src/incidents/incident.gateway'
+import { Barrier } from 'src/core/entity/barrier.entity'
 
 @Injectable()
 export class VehicleService {
@@ -18,6 +19,8 @@ export class VehicleService {
     private readonly entryRepo: Repository<VehicleEntry>,
     @InjectRepository(Parking)
     private readonly parkRepo: Repository<Parking>,
+    @InjectRepository(Barrier)
+    private readonly barrierRepo: Repository<Barrier>,
     private readonly gateway: IncidentGateway
   ) {}
 
@@ -45,10 +48,32 @@ export class VehicleService {
     if (entry) {
       entry.status = 'OUT'
       entry.exitTime = new Date()
+      
+      let b = await this.barrierRepo.findOne( { where: { name: 'Salida-PB' } })
+      b.status = 'OPEN'
+      await this.barrierRepo.save(b)
+      await this.gateway.barrierMoved( b )
       await this.entryRepo.save(entry)
       await this.gateway.newVehicleEntry(entry)
+      
+      setTimeout( async () => {
+        b.name = 'CLOSED'
+        await this.barrierRepo.save( b )
+        await this.gateway.barrierMoved( b )
+      }, 3000 )
     }
 
+  }
+
+  async getVehicleEntries(): Promise<VehicleEntry[]> {
+    return this.entryRepo.find({
+      where: {},
+      order: { 
+        entryTime: 'DESC', 
+        exitTime: 'DESC'
+      },
+      relations: ['vehicle']
+    })
   }
 
   async createVehicle(dto: CreateVehicleDto, userId: string): Promise<Vehicle> {
@@ -84,26 +109,4 @@ export class VehicleService {
     return user.vehicles
   }
 
-  async registerEntry(dto: CreateVehicleEntryDto): Promise<VehicleEntry> {
-    const vehicle = await this.vehicleRepo.findOne({ where: { rfidTag: dto.rfidTag } })
-    if (!vehicle) throw new NotFoundException('Vehiculo no registrado')
-    const entry = this.entryRepo.create({
-      vehicle,
-      status: dto.status,
-      entryTime: new Date(),
-      exitTime: dto.status === 'OUT' ? new Date() : null,
-    })
-    return this.entryRepo.save(entry)
-  }
-
-  async getVehicleEntries(): Promise<VehicleEntry[]> {
-    return this.entryRepo.find({
-      where: {},
-      order: { 
-        entryTime: 'DESC', 
-        exitTime: 'DESC'
-      },
-      relations: ['vehicle']
-    })
-  }
 }
