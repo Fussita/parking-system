@@ -58,7 +58,7 @@ export class VehicleService {
       await this.gateway.newVehicleEntry({ ...entry, rfidTag: entry })
       
       setTimeout( async () => {
-        b.name = 'CLOSED'
+        b.status = 'CLOSED'
         await this.barrierRepo.save( b )
         await this.gateway.barrierMoved( b )
       }, 3000 )

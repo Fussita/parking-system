@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, OneToOne, JoinColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Vehicle } from './vehicle.entity';
 
 @Entity()
@@ -16,8 +16,7 @@ export class Parking {
   @Column({ default: false })
   occupied: boolean;
 
-  @OneToOne(() => Vehicle, { nullable: true }) 
+  @ManyToOne(() => Vehicle, vehicle => vehicle.parkings, { nullable: true }) 
   @JoinColumn() 
   vehicle: Vehicle;
-
 }

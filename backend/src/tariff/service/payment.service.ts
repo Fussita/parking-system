@@ -51,7 +51,7 @@ export class PaymentService {
     p.vehicle = vh
 
     let vhentry = this.entryRepo.create({ vehicle: vh, })
-    const payment = this.paymentRepo.create({ user, amount: tariff.ratePerHour, })
+    const payment = this.paymentRepo.create({ user: user, amount: tariff.ratePerHour, })
     await this.paymentRepo.save(payment)
     await this.userRepo.save(user)
     await this.entryRepo.save(vhentry)
@@ -64,7 +64,7 @@ export class PaymentService {
     await this.gateway.newVehicleEntry( {...vhentry, rfidTag: vh.rfidTag } )
 
     setTimeout( async () => {
-      b.name = 'CLOSED'
+      b.status = 'CLOSED'
       await this.barrierRepo.save(b)
       await this.gateway.barrierMoved( b )
     }, 3000 )    

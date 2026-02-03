@@ -18,9 +18,9 @@ export class Vehicle {
 
   @OneToMany(() => VehicleEntry, (entry) => entry.vehicle)
   entries: VehicleEntry[];
-
-  @OneToOne(() => Parking, (parking) => parking.vehicle, { nullable: true }) 
-  parking: Parking;
+  
+  @OneToMany(() => Parking, parking => parking.vehicle) 
+  parkings: Parking[];
 }
 
 @Entity()
