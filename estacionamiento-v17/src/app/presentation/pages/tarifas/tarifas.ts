@@ -23,6 +23,9 @@ export class Tarifas {
 
   ngOnInit() {
     this.gets();
+    this.inpSearch.valueChanges.subscribe(() => {
+      this.applyLocalFilter();
+    });
   }
   
 
@@ -35,11 +38,11 @@ export class Tarifas {
   gets() {
     this.tarifaService.findAll().subscribe({
       next: (e: any) => {
-        this.tarifas = e;
         this.allTarifas = Array.isArray(e) ? e : [];
+        this.applyLocalFilter();
       },
       error: (e) => {
-        this.popup.showError(e.error.message);
+        this.popup.showError(e.error?.message || 'Error al obtener tarifas');
       }
     });
   }
@@ -65,7 +68,7 @@ export class Tarifas {
           name: this.formTarifa.name,
           description: this.formTarifa.description,
           ratePerHour: this.formTarifa.ratePerHour,
-          active: true 
+          
       };
 
       if (this.editingTarifa && (this.editingTarifa.id)) {
@@ -123,8 +126,9 @@ export class Tarifas {
     }
 
     this.tarifas = this.allTarifas.filter(p => {
+      const name = (p.name || '').toString().toLowerCase();
       const desc = (p.description || '').toString().toLowerCase();
-      return desc.includes(q);
+      return name.includes(q) || desc.includes(q);
     });
   }
 

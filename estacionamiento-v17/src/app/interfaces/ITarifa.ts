@@ -3,5 +3,5 @@ export interface ITarifa {
     name: string;
     description: string;
     ratePerHour: number;
-    active: boolean;
+    
 }
