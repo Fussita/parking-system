@@ -10,7 +10,6 @@ import { Server, Socket } from 'socket.io'
 import { Barrier } from 'src/core/entity/barrier.entity'
 import { Incident, IncidentMessage } from 'src/core/entity/incident.entity'
 import { User } from 'src/core/entity/user.entity'
-import { VehicleEntry } from 'src/core/entity/vehicle.entity'
 import { Repository } from 'typeorm'
 
 @WebSocketGateway({ cors: true })
@@ -57,8 +56,7 @@ export class IncidentGateway implements OnGatewayConnection, OnGatewayDisconnect
   handleDisconnect(client: Socket) {}
 
   async newIncident(incident: Incident) {
-    const room = `incident-${incident.id}`
-    this.server.to(room).emit('newIncident', { incident })
+    this.server.emit('newIncident', { ...incident })
   }
 
   async barrierMoved(entry: Barrier) {
@@ -75,19 +73,11 @@ export class IncidentGateway implements OnGatewayConnection, OnGatewayDisconnect
     const user = await this.userRepo.findOne({ where: { id: payload.userId } })
 
     if (!incident || !user) return
-
-    const msg = this.msgRepo.create({
-      incident,
-      sender: user,
-      message: payload.message,
-    })
+    const msg = this.msgRepo.create({ incident, sender: user, message: payload.message, })
     await this.msgRepo.save(msg)
 
-    const room = `incident-${incident.id}`
-    this.server.to(room).emit('receiveMessage', {
-      user: user.name,
-      message: payload.message,
-      timestamp: msg.timestamp,
-    })
+    //const room = `incident-${incident.id}`
+    //this.server.to(room).emit('receiveMessage', msg)
+    this.server.emit('receiveMessage', msg)
   }
 }

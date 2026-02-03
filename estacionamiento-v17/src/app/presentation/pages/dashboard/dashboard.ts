@@ -175,7 +175,7 @@ export class Dashboard implements OnInit, OnDestroy {
             user: entry.vehicle.user.name || 'Desconocido',
             amount: !isEntry ? 'Finalizado' : 'En curso',
             time: this.formatTime(isEntry ? entry.entryTime : entry.exitTime),
-            date: entry.date ? this.formatDate(new Date(entry.date)) : 'N/A',
+            date: entry.entryTime ? this.formatDate(new Date(entry.entryTime)) : 'N/A',
             type: entry.status || 'IN'
           };
         });

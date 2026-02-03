@@ -18,7 +18,7 @@
         <th>Título</th>
         <th>Descripción</th>
         <th>Fecha Creación</th>
-        <th>Estatus</th>
+        <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
@@ -43,7 +43,7 @@
         <button class="close-btn" (click)="closeChat()">X</button>
       </div>
       <div class="chat-modal-body">
-        <app-chat (resolveIncident)="resolveCurrentChat()" ></app-chat>
+        <app-chat [chat]="chat" (resolveIncident)="resolveCurrentChat()" ></app-chat>
       </div>
     </div>
   </div>

@@ -41,7 +41,7 @@ export class IncidentService {
     }
 
     async getIncidents() {
-        return await this.inciRepo.find({ relations: ['user'] })
+        return await this.inciRepo.find({ relations: ['user', 'messages', 'messages.sender'] })
     }
     
     async getMessagesByIncident( id: string ) {

@@ -30,7 +30,7 @@
                 <div class="car-icon" *ngIf="spot.occupied">🚗</div>
                 <div class="free-icon" *ngIf="!spot.occupied">P</div>
                 <small>{{ spot.location }}</small>
-                <div *ngIf="spot.vehicle" style="font-size: 0.8rem; font-weight: bold; margin-top: 4px;">{{ spot.vehicle.rfidTag }}</div>
+                <div *ngIf="spot.vehicle" style="font-size: 0.8rem; font-weight: bold; margin-top: 4px;">{{ spot.vehicle.vehicle.rfidTag }}</div>
             </div>
         </div>
     </div>

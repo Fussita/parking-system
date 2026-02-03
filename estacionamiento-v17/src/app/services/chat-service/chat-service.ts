@@ -3,23 +3,26 @@ import { Subject } from 'rxjs';
 import { io, Socket } from 'socket.io-client';
 import { IChatMessage } from '../../interfaces/Ichat';
 import { UserStore } from '../../config/user-store';
-import { IUser } from '../../interfaces/IUser';
 import { IBarrier } from '../../interfaces/IBarrier';
+import { Incidencia } from '../../interfaces/Iincidencias';
+import { IVehicleEntry } from '../../interfaces/IVehicle';
 
-
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ChatService {
   
   private socket: Socket | null = null;
   private messageSubject = new Subject<IChatMessage>();
-  public messages$ = this.messageSubject.asObservable();
   private barrierSubject = new Subject<IBarrier>();
+  private incidentSubject = new Subject<Incidencia>();
+  private entrySubject = new Subject<IVehicleEntry>();
+  
+  public messages$ = this.messageSubject.asObservable();
   public barrier$ = this.barrierSubject.asObservable();
+  public incident$ = this.incidentSubject.asObservable();
+  public entry$ = this.entrySubject.asObservable();
+
   private readonly BACKEND_URL = 'http://localhost:3000';
   private currentIncidentId: string | null = null;
-
 
   constructor() {
     this.autoConnect();
@@ -34,7 +37,6 @@ export class ChatService {
         }
     }
   }
-
 
   public connect(userId: string): void {
     if (this.socket && this.socket.connected) return;
@@ -52,8 +54,15 @@ export class ChatService {
       this.handleIncomingMessage(payload);
     });
 
+    this.socket.on('newIncident', (payload: any) => {
+      this.handleNewIncident(payload);
+    });
+
+    this.socket.on('vehicleEntry', (payload: any) => {
+      this.handleNewEntry(payload);
+    });
+
     this.socket.on('barriedMoved', (payload: { entry: IBarrier }) => {
-      console.log('Barrera movida:', payload.entry);
       this.barrierSubject.next(payload.entry);
     });
 
@@ -62,91 +71,27 @@ export class ChatService {
     });
   }
 
-  
-  public setContext(incidentId: string) {
-    this.currentIncidentId = incidentId;
-    this.joinIncidentRoom(incidentId);
+  public handleNewIncident( entry: Incidencia ) {
+    this.incidentSubject.next(entry)
   }
 
-  
-  public joinIncidentRoom(incidentId: string) {
-    if (!this.socket) return;
-    this.socket.emit('joinIncident', { incidentId });
+  public handleNewEntry( entry: IVehicleEntry ) {
+    this.entrySubject.next(entry)
   }
 
-  
-  public sendMessage(message: string): void {
+  public sendMessage(message: string, incidentId: string): void {
     const userStore = UserStore.getInstance();
-    
-    if (!this.socket || !this.socket.connected) {
+    const userId = userStore.getUserId()
+    if (!this.socket || !this.socket.connected) 
         console.warn('Socket desconectado, intentando reconectar...');
-        
-        if (userStore.isValid()) {
-             const userId = userStore.getUserId();
-             console.log('Intentando reconectar con Usuario ID:', userId);
-             
-             if (userId) {
-                 this.connect(userId);
-             } else {
-                 console.error('El usuario tiene sesión pero no tiene ID válido:', userStore.User);
-             }
-        } else {
-            console.error('El UserStore no tiene una sesión válida. No se puede reconectar.');
-        }
-    }
-
-    if (!this.socket) {
-        console.error('ERROR FATAL: Socket sigue siendo null tras intento de conexión.');
-        return;
-    }
-
-    if (!this.currentIncidentId) {
-        console.warn('No hay incidencia seleccionada para enviar mensaje');
-        return;
-    }
-    
-    if (!userStore.isValid()) {
-         console.error('No hay usuario autenticado');
-         return;
-    }
-    
-    const userId = userStore.getUserId();
-    if (!userId) {
-        console.error('CRITICAL: Usuario autenticado pero sin ID. No se puede enviar mensaje.');
-        return;
-    }
-
-
-    const payload = {
-        message,
-        incidentId: this.currentIncidentId,
-        userId: userId
-    };
+    if (!this.socket) return
+    const payload = { message, incidentId: incidentId, userId: userId };
     this.socket.emit('sendMessage', payload);
-
-    const myMessage: IChatMessage = {
-        id: 'temp-' + Date.now(),
-        message: message,
-        timestamp: new Date(),
-        incident: { id: this.currentIncidentId } as any, 
-        sender: userStore.User,
-        
-    };
-    this.messageSubject.next(myMessage);
+    //this.messageSubject.next(myMessage);
   }
 
   private handleIncomingMessage(data: any) {
-    console.log('Mensaje recibido del socket:', data);
-
-    const chatMsg: IChatMessage = {
-        id: data.id || Date.now().toString(),
-        message: data.message || '',
-        timestamp: data.timestamp ? new Date(data.timestamp) : new Date(),
-        sender: data.sender || { name: 'Desconocido', id: '0' }, 
-        incident: data.incident || { id: '0' } 
-    };
-
-    this.messageSubject.next(chatMsg);
+    this.messageSubject.next(data);
   }
 
   public disconnect() {

@@ -1,3 +1,4 @@
+import { IChatMessage } from "./Ichat";
 import { IUser } from "./IUser";
 
 export interface Incidencia {
@@ -5,6 +6,8 @@ export interface Incidencia {
   title: string;
   description: string;
   createdAt: string | Date;
-  status?: string; 
+  closedAt: string | Date;
+  status: string; 
   user: IUser;
+  messages: IChatMessage[]
 }

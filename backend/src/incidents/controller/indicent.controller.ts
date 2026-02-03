@@ -31,7 +31,7 @@ constructor(private readonly incidentService: IncidentService) {}
 
   
   @Post('done/:id')
-  @Roles('Conductor', 'Administrador')
+  @Roles('Administrador', 'Conductor')
   @UseGuards( JwtGuard, RolesGuard ) 
   @ApiBearerAuth('access-token')  
   async doneIncident(@Param('id') id: string, @Req() req: Request) {

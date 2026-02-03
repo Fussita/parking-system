@@ -60,10 +60,14 @@ export class LoginPage {
       password: password
     }).subscribe({
       next: (e: any) => {
-        const user = UserStore.getInstance()
-        user.setUser({ token: e.token, ...e.user })
-        
-        this.router.navigateByUrl('/home')
+        if (e.role != 'Administrador') {
+          this.submitting = false;
+          this.popup.showError('No tiene Autorización');
+        } else {
+          const user = UserStore.getInstance()
+          user.setUser({ token: e.token, ...e.user })  
+          this.router.navigateByUrl('/home')
+        }
       },
       error: (e) => {
         this.submitting = false;

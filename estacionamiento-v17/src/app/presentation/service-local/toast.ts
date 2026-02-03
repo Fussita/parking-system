@@ -48,6 +48,27 @@ export class PopUpService {
     })
   }
 
+  showInfoCenter(text:string) {
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "center",
+      showConfirmButton: false,
+      timer: 5000,
+      timerProgressBar: true,
+    })
+    
+    Toast.fire({
+      icon: 'info',
+      title: text,
+      showClass: {
+        popup: `animate__animated animate__fadeInUp animate__faster`
+      },
+      hideClass: {
+        popup: `animate__animated animate__fadeOutDown animate__faster `
+      }
+    })
+  }
+
   showSuccess(text:string) {
     const Toast = Swal.mixin({
       toast: true,

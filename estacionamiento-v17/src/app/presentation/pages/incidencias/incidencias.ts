@@ -22,18 +22,9 @@ export class Incidencias implements OnInit {
   filteredIncidencias: Incidencia[] = [];
   isChatOpen = false;
   currentChatIncidencia: Incidencia | null = null;
-  private chatService = inject(ChatService);
   private incidenciasService = inject(IncidenciasService);
 
   ngOnInit(): void {
-      try {
-        let user = UserStore.getInstance().User
-        if(user && user.id) {
-            this.chatService.connect(user.id);
-        }
-      } catch(e) {
-        console.log('Usuario no autenticado para chat');
-      }
       this.loadIncidencias();
   }
 
@@ -63,25 +54,22 @@ export class Incidencias implements OnInit {
     }
   }
 
+  chat: Incidencia | null = null
+
   openChat(item: Incidencia) {
-    console.log('Chat abierto para:', item.id);
     this.currentChatIncidencia = item;
-    
-    // Usamos el ID real de la incidencia
-    if (item.id) {
-        this.chatService.setContext(item.id);
-        this.isChatOpen = true;
-    }
+    this.chat = item
+    if (item.id) this.isChatOpen = true;
   }
 
   closeChat() {
     this.isChatOpen = false;
+    this.chat = null
     this.currentChatIncidencia = null;
   }
 
   markResolved(item: Incidencia) {
-    console.log('Marcado como resuelto:', item.id);
-    item.status = 'Resuelto';
+    item.status = 'CLOSED';
   }
 
   resolveCurrentChat() {

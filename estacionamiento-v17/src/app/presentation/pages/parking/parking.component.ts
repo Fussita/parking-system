@@ -33,17 +33,14 @@ export class ParkingComponent implements OnInit {
       spots: this.parkingService.getSpots().pipe(take(1)),            // 1. Obtenemos TODOS los puestos de la BD
       activeVehicles: this.vehicleService.getActiveVehicles().pipe(take(1))
     }).subscribe({
-      next: ({ spots, activeVehicles }) => {
-        console.log('Spots recibidos:', spots);
-        console.log('Vehículos activos:', activeVehicles);
-
+      next: ({ spots, activeVehicles }) => {  
         if (!spots || spots.length === 0) {
           console.warn('La base de datos de puestos está vacía');
           this.spots = [];
         } else {
           this.spots = spots.map(spot => {
             // Buscamos el vehículo activo usando únicamente el ID del puesto
-            const vehicleInSpot = activeVehicles.find(v => v.parkingSpotId === spot.id || v.spotId === spot.id);
+            const vehicleInSpot = activeVehicles.find(v => v.vehicle.parking?.id === spot.id || v.vehicle.parking?.id === spot.id);
 
             return {
               ...spot,

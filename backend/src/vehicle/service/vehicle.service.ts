@@ -28,7 +28,7 @@ export class VehicleService {
     let veh = await this.vehicleRepo.findOne({ where: { rfidTag: rfidTag } })
     if (!veh) throw new BadRequestException('Vehiculo no registrado')
 
-    let entry = await this.entryRepo.findOne({ where: { vehicle: { id: veh.id }, exitTime: IsNull() } })
+    let entry = await this.entryRepo.findOne({ where: { vehicle: { id: veh.id }, exitTime: IsNull() }, relations: ['vehicle'] })
 
     // Buscar el puesto por el lado dueño de la relación (Parking.vehicle).
     let p = await this.parkRepo.findOne({ where: { vehicle: { id: veh.id } } })
@@ -55,7 +55,7 @@ export class VehicleService {
       await this.barrierRepo.save(b)
       await this.gateway.barrierMoved( b )
       await this.entryRepo.save(entry)
-      await this.gateway.newVehicleEntry({ ...entry, rfidTag: entry })
+      await this.gateway.newVehicleEntry({ ...entry })
       
       setTimeout( async () => {
         b.status = 'CLOSED'
