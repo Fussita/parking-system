@@ -45,8 +45,8 @@ export class PaymentMethod {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'enum', enum: ['TRANSFERENCIA', 'CRYPTO', 'PAYPAL', 'PAGO MOVIL'] })
-  type: 'TRANSFERENCIA' | 'CRYPTO' | 'PAYPAL' | 'PAGO MOVIL' ;
+  @Column({ type: 'enum', enum: ['TRANSFERENCIA', 'CRYPTO', 'PAYPAL', 'PAGO MOVIL', 'TDC'] })
+  type: 'TRANSFERENCIA' | 'CRYPTO' | 'PAYPAL' | 'PAGO MOVIL' | 'TDC' ;
 
   @Column({ type: 'jsonb', nullable: true })
   details: any;

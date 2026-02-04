@@ -41,7 +41,7 @@ export class DashboardService {
 
     const result: { [month: string]: number } = {};
     rows.forEach((row) => {
-      const month = new Date(row.month).toLocaleString('default', { month: 'long' });
+      const month = new Date(row.month).toLocaleString('es-ES', { month: 'long', timeZone: 'UTC' });
       result[month] = Number(row.total);
     });
 
